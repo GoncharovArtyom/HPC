@@ -1,7 +1,6 @@
 autoreg
 visual
-timer_log_1
-timer_log_2
+timer_log_*
 zeta
 .idea/*
 cmake-build-debug/*

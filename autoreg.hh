@@ -159,18 +159,18 @@ namespace autoreg {
 			auto current_end = std::next(current_start, step);
 			auto generator = std::bind(normal, generators[i]);
 			std::thread current_thread(
-					std::generate<decltype(current_start), decltype(current_end), decltype
-					(generator)> current_start, current_end, generator);
-			threads.push_back(current_thread);
+					std::generate<decltype(current_start), decltype
+					(generator)>, current_start, current_end, generator);
+			threads.push_back(std::move(current_thread));
 			current_start = current_end;
 		}
 
 		auto current_end = std::end(eps);
 		auto generator = std::bind(normal, generators[generators.size()-1]);
 		std::thread current_thread(
-				std::generate<decltype(current_start), decltype(current_end), decltype
-				(generator)> current_start, current_end, generator);
-		threads.push_back(current_thread);
+				std::generate<decltype(current_start), decltype
+				(generator)>, current_start, current_end, generator);
+		threads.push_back(std::move(current_thread));
 
 		//Ожидание выполнения
 		for(auto& current_thread : threads){

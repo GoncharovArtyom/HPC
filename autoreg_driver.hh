@@ -38,7 +38,7 @@ namespace autoreg {
                 zsize2(zsize) {}
 
         void act() {
-            FormattedTimer timer("timer_log_2", zsize, acf_size);
+            FormattedTimer timer("timer_log_3", zsize, acf_size);
 
             echo_parameters();
 
