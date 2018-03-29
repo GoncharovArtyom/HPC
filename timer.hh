@@ -7,7 +7,7 @@
 
 #include <fstream>
 #include <string>
-#include <ctime>
+#include <chrono>
 
 namespace autoreg {
     struct FormattedTimer {
@@ -24,24 +24,22 @@ namespace autoreg {
         }
 
         void begin_clock() {
-            start = clock();
+            start = std::chrono::steady_clock::now();
         }
 
         void end_clock() {
-            end = clock();
+            end = std::chrono::steady_clock::now();
         }
 
         void write(std::string function_name) {
-            std::clock_t diff = end - start;
-            double n_secs = double(diff) / CLOCKS_PER_SEC;
-
-            out <<first_second_columns<< function_name << "\t\t" << n_secs <<" sec"<< std::endl;
+            auto diff = std::chrono::duration_cast<std::chrono::seconds>(end - begin).count();
+            out <<first_second_columns<< function_name << "\t\t" << diff <<" sec"<< std::endl;
         }
 
     private:
         std::ofstream out;
-        std::clock_t start;
-        std::clock_t end;
+        std::chrono::steady_clock::time_point start;
+        std::chrono::steady_clock::time_point end;
         std::string first_second_columns;
     };
 }
