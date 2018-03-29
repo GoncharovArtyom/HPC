@@ -6,3 +6,5 @@ zeta
 .idea/*
 cmake-build-debug/*
 slurm*
+mt_configs_file
+initializer_mt

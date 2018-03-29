@@ -22,11 +22,17 @@ VISUAL    = visual
 VISUAL_SOURCES = visual.cc
 VISUAL_LDFLAGS = $(shell pkg-config --libs freeglut) -lGL
 
+INITIALIZER = initializer_mt
+INITIALIZER_SOURCES = initializer_mt.cc
+
 $(BINARY): $(SOURCES) *.hh Makefile
 	$(CXX) $(CXXFLAGS) $(SOURCES) $(LDFLAGS) -o $(BINARY)
 
 $(VISUAL): Makefile *.hh $(VISUAL_SOURCES)
 	$(CXX) $(CXXFLAGS) $(VISUAL_SOURCES) $(VISUAL_LDFLAGS) -o $(VISUAL)
+
+$(INITIALIZER): Makefile  parallel_mt.hh dc.h $(INITIALIZER_SOURCES)
+	$(CXX) $(CXXFLAGS) $(INITIALIZER_SOURCES) -L./ -ldcmt -o $(INITIALIZER)
 
 run: ../tests autoreg.model
 run: $(BINARY)
