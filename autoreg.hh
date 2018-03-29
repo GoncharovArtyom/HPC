@@ -11,12 +11,16 @@
 #include <fstream>               // for ofstream
 #include <random>                // for mt19937, normal_distribution
 #include <stdexcept>             // for runtime_error
+#include <fstream>
+#include <vector>
+#include <thread>
 
 #include <blitz/array.h>         // for Array, Range, shape, any
 
 #include "sysv.hh"               // for sysv
 #include "types.hh"              // for size3, ACF, AR_coefs, Zeta, Array2D
 #include "voodoo.hh"             // for generate_AC_matrix
+#include "parallel_mt.hh"
 
 /// @file
 /// File with subroutines for AR model, Yule-Walker equations
@@ -131,17 +135,44 @@ namespace autoreg {
 		if (variance < T(0)) {
 			throw std::runtime_error("variance is less than zero");
 		}
+		//Чтение из файла и создание генераторов
+		size_t n_threads = 8;
+		std::string file_name = "mt_configs_file";
+		std::ifstream file(file_name);
 
-		// инициализация генератора
-		std::mt19937 generator;
-		#if !defined(DISABLE_RANDOM_SEED)
-		generator.seed(std::chrono::steady_clock::now().time_since_epoch().count());
-		#endif
+		std::vector<parallel_mt> generators;
+		for (size_t i=0; i<n_threads; ++i){
+			mt_config config;
+			config << file;
+			generators.push(parallel_mt(config));
+		}
+
+		//Параллельное заполнение массива
 		std::normal_distribution<T> normal(T(0), std::sqrt(variance));
-
-		// генерация и проверка
 		Zeta<T> eps(size);
-		std::generate(std::begin(eps), std::end(eps), std::bind(normal, generator));
+
+		auto& current_start = eps.begin();
+		size_t step = size(0)*size(1)*size(2) / n_threads;
+		std::vector<std::thread> threads;
+
+		for (size_t i=0; i<n_threads-1; ++i){
+			auto& current_end = std::next(current_start, step);
+			std::thread current_thread(std::generate, current_start,
+									   current_end, std::bind(normal, generators[i]));
+			threads.push(current_thread);
+			current_start = std::next(current_start, step);
+		}
+
+		std::thread current_thread(std::generate, current_start,
+								   eps.end(), std::bind(normal, generators[generators.size()-1]));
+		threads.push(current_thread);
+
+		//Ожидание выполнения
+		for(auto& current_thread : threads){
+			current_thread.join();
+		}
+
+		//Проверка
 		if (std::any_of(std::begin(eps), std::end(eps), &::autoreg::isnan<T>)) {
 			throw std::runtime_error("white noise generator produced some NaNs");
 		}
