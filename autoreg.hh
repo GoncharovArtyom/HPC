@@ -157,12 +157,19 @@ namespace autoreg {
 
 		for (size_t i=0; i<n_threads-1; ++i){
 			auto current_end = std::next(current_start, step);
-			std::thread current_thread(std::generate, current_start, current_end, std::bind(normal, generators[i]));
+			auto generator = std::bind(normal, generators[i]);
+			std::thread current_thread(
+					std::generate<decltype(current_start), decltype(current_end), decltype
+					(generator)> current_start, current_end, generator);
 			threads.push_back(current_thread);
 			current_start = current_end;
 		}
 
-		std::thread current_thread(std::generate, current_start, std::end(eps), std::bind(normal, generators[generators.size()-1]));
+		auto current_end = std::end(eps);
+		auto generator = std::bind(normal, generators[generators.size()-1]);
+		std::thread current_thread(
+				std::generate<decltype(current_start), decltype(current_end), decltype
+				(generator)> current_start, current_end, generator);
 		threads.push_back(current_thread);
 
 		//Ожидание выполнения
@@ -213,7 +220,6 @@ namespace autoreg {
 		const T m = mean(rhs);
 		return blitz::sum(blitz::pow(rhs-m, 2)) / (rhs.numElements() - 1);
 	}
-
 }
 
 #endif // AUTOREG_HH
