@@ -143,29 +143,27 @@ namespace autoreg {
 		std::vector<parallel_mt> generators;
 		for (size_t i=0; i<n_threads; ++i){
 			mt_config config;
-			config << file;
-			generators.push(parallel_mt(config));
+			file>>config;
+			generators.push_back(parallel_mt(config));
 		}
 
 		//Параллельное заполнение массива
 		std::normal_distribution<T> normal(T(0), std::sqrt(variance));
 		Zeta<T> eps(size);
 
-		auto& current_start = eps.begin();
+		auto current_start = std::begin(eps);
 		size_t step = size(0)*size(1)*size(2) / n_threads;
 		std::vector<std::thread> threads;
 
 		for (size_t i=0; i<n_threads-1; ++i){
-			auto& current_end = std::next(current_start, step);
-			std::thread current_thread(std::generate, current_start,
-									   current_end, std::bind(normal, generators[i]));
-			threads.push(current_thread);
-			current_start = std::next(current_start, step);
+			auto current_end = std::next(current_start, step);
+			std::thread current_thread(std::generate, current_start, current_end, std::bind(normal, generators[i]));
+			threads.push_back(current_thread);
+			current_start = current_end;
 		}
 
-		std::thread current_thread(std::generate, current_start,
-								   eps.end(), std::bind(normal, generators[generators.size()-1]));
-		threads.push(current_thread);
+		std::thread current_thread(std::generate, current_start, std::end(eps), std::bind(normal, generators[generators.size()-1]));
+		threads.push_back(current_thread);
 
 		//Ожидание выполнения
 		for(auto& current_thread : threads){
