@@ -5,3 +5,4 @@ timer_log_2
 zeta
 .idea/*
 cmake-build-debug/*
+slurm*

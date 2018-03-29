@@ -32,8 +32,8 @@ namespace autoreg {
         }
 
         void write(std::string function_name) {
-            auto diff = std::chrono::duration_cast<std::chrono::seconds>(end - begin).count();
-            out <<first_second_columns<< function_name << "\t\t" << diff <<" sec"<< std::endl;
+            auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+            out <<first_second_columns<< function_name << "\t\t" << diff <<" millisec"<< std::endl;
         }
 
     private:
