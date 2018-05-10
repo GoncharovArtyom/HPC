@@ -24,11 +24,11 @@ namespace autoreg {
         }
 
         void begin_clock() {
-            start = std::chrono::steady_clock::now();
+            start = std::chrono::system_clock::now();
         }
 
         void end_clock() {
-            end = std::chrono::steady_clock::now();
+            end = std::chrono::system_clock::now();
         }
 
         void write(std::string function_name) {
@@ -38,8 +38,8 @@ namespace autoreg {
 
     private:
         std::ofstream out;
-        std::chrono::steady_clock::time_point start;
-        std::chrono::steady_clock::time_point end;
+        std::chrono::system_clock::time_point start;
+        std::chrono::system_clock::time_point end;
         std::string first_second_columns;
     };
 }
