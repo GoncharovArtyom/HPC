@@ -21,6 +21,7 @@
 #include "types.hh"              // for size3, ACF, AR_coefs, Zeta, Array2D
 #include "voodoo.hh"             // for generate_AC_matrix
 #include "parallel_mt.hh"
+#include "generate_zeta_parallel.hh"
 
 /// @file
 /// File with subroutines for AR model, Yule-Walker equations
