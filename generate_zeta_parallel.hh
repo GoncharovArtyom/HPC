@@ -27,7 +27,7 @@ namespace parallel {
     struct ZetaGenerationController {
 
         ZetaGenerationController(int t_step_, int x_step_, int y_step_, int t_max, int x_max, int y_max):
-                x_step(x_step_), t_step(t_step_), y_step(y_step_) {
+                t_step(t_step_), x_step(x_step_), y_step(y_step_) {
             size_t t_size = ceil(double(t_max) / t_step);
             size_t x_size = ceil(double(x_max) / x_step);
             size_t y_size = ceil(double(y_max) / y_step);
@@ -90,6 +90,10 @@ namespace parallel {
         }
 
         bool is_available(ZetaGenerationBlock &block) {
+            int t_id = block.t_id;
+            int x_id = block.x_id;
+            int y_id = block.y_id;
+
             int t_id_prev = block.t_id - 1;
             int x_id_prev = block.x_id - 1;
             int y_id_prev = block.y_id - 1;
