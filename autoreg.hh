@@ -238,20 +238,18 @@ namespace autoreg {
 
 		parallel::ZetaGenerationController controller(t_step, x_step, y_step, t1, x1, y1);
 
-		std::clog<<controller.completed(0, 0, 0)<<std::endl;
-
 		int n_threads = 8;
 		std::vector<std::thread> threads;
 
-//		for(int thread_id=0; thread_id< n_threads; ++thread_id){
-//			std::thread current_thread(generate_zeta_parallel_worker<T>, std::ref(phi), std::ref(zeta),
-//									   std::ref(controller));
-//			threads.push_back(std::move(current_thread));
-//		}
-//
-//		for(std::thread& current_thread : threads){
-//			current_thread.join();
-//		}
+		for(int thread_id=0; thread_id< n_threads; ++thread_id){
+			std::thread current_thread(generate_zeta_parallel_worker<T>, std::ref(phi), std::ref(zeta),
+									   std::ref(controller));
+			threads.push_back(std::move(current_thread));
+		}
+
+		for(std::thread& current_thread : threads){
+			current_thread.join();
+		}
 
 	}
 
