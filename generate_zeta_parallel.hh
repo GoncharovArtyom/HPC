@@ -2,6 +2,7 @@
 #define HPC_GENERATE_ZETA_PARALLEL_HH
 
 #include <vector>
+#include <iostream>
 #include <mutex>
 #include <list>
 #include <blitz/array.h>
@@ -28,7 +29,7 @@ namespace parallel {
 
     struct ZetaGenerationController {
 
-        ZetaGenerationController(int t_step_, int x_step_, int y_step_, int t_max, int x_max, int y_max):
+        ZetaGenerationController(int t_step_, int x_step_, int y_step_, int t_max, int x_max, int y_max) :
                 t_step(t_step_), x_step(x_step_), y_step(y_step_) {
             size_t t_size = ceil(double(t_max) / t_step);
             size_t x_size = ceil(double(x_max) / x_step);
@@ -86,6 +87,8 @@ namespace parallel {
                 if (is_available(*current)) {
                     available_block = *current;
                     queue.erase(current);
+                    std::clog << "t_id = " << available_block.t_id << "x_id = " << available_block.x_id << "y_id = "
+                              << available_block.y_id << std::endl;
                     return true;
                 }
             }
