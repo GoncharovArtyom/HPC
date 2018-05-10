@@ -198,7 +198,7 @@ namespace autoreg {
 			bool was_found = controller.find_available(block);
 
 			if (!was_found){
-				std::lock_guard<std::recursive_mutex> lock(controller.mtx);
+				std::lock_guard<std::mutex> lock(controller.queue_mtx);
 				if (controller.queue.size() == 0){
 					break;
 				}
@@ -233,9 +233,9 @@ namespace autoreg {
 		const int x1 = zsize[1];
 		const int y1 = zsize[2];
 
-		const int t_step = std::max(fsize[0], zsize[0]/15);
-		const int x_step = std::max(fsize[1], zsize[1]/5);
-		const int y_step = std::max(fsize[2], zsize[2]/5);
+		const int t_step = std::max(fsize[0], zsize[0]/20);
+		const int x_step = std::max(fsize[1], zsize[1]/4);
+		const int y_step = std::max(fsize[2], zsize[2]/4);
 
 		std::clog<<"Размер блока: "<<t_step<<"*"<<x_step<<"*"<<y_step<<std::endl;
 		std::clog<<"Всего блоков: "<<ceil(zsize[0]*zsize[1]*zsize[2]/t_step/x_step/y_step)<<std::endl;

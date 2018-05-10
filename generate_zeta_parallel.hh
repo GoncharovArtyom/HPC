@@ -85,7 +85,7 @@ namespace parallel {
         }
 
         bool find_available(ZetaGenerationBlock &available_block) {
-            lock_guard <recursive_mutex> lock(mtx);
+            lock_guard <mutex> lock(queue_mtx);
 
 //            std::clog<<queue.size()<<std::endl;
 
@@ -113,7 +113,7 @@ namespace parallel {
             int x_id_prev = block.x_id - 1;
             int y_id_prev = block.y_id - 1;
 
-            lock_guard <recursive_mutex> lock(mtx);
+            lock_guard <mutex> lock(completed_mtx);
 
 //            std::clog<<completed(t_id_prev, x_id, y_id)<<std::endl;
 //            std::clog<<completed(t_id, x_id_prev, y_id)<<std::endl;
@@ -156,7 +156,7 @@ namespace parallel {
         }
 
         void set_completed(ZetaGenerationBlock &block) {
-            lock_guard <recursive_mutex> lock(mtx);
+            lock_guard <mutex> lock(completed_mtx);
             completed(block.t_id, block.x_id, block.y_id) = true;
         }
 
@@ -167,7 +167,8 @@ namespace parallel {
         int x_step;
         int y_step;
 
-        recursive_mutex mtx;
+        mutex queue_mtx;
+        mutex completed_mtx;
     };
 }
 #endif //HPC_GENERATE_ZETA_PARALLEL_HH
