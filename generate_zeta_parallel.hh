@@ -86,8 +86,8 @@ namespace parallel {
 
         bool find_available(ZetaGenerationBlock &available_block) {
             lock_guard <recursive_mutex> lock(mtx);
-            
-            std::clog<<queue.size()<<std::endl;
+
+//            std::clog<<queue.size()<<std::endl;
 
             if (queue.size() == 0) {
                 return false;
