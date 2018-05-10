@@ -186,41 +186,40 @@ namespace autoreg {
 		return eps;
 	}
 
-	template<class T>
-	void generate_zeta_parallel_worker(const AR_coefs<T>& phi, Zeta<T>& zeta,
-									   parallel::ZetaGenerationController& controller){
-		const size3 fsize = phi.shape();
-		const size3 zsize = zeta.shape();
-
-		while (true){
-			parallel::ZetaGenerationBlock block;
-			bool was_found = controller.find_available(block);
-
-			if (!was_found){
-				std::lock_guard<std::mutex> lock(controller.mtx);
-				if (controller.queue.size() == 0){
-					break;
-				}
-			} else {
-				for (int t=block.t_start; t<block.t_end; t++) {
-					for (int x=block.x_start; x<block.x_end; x++) {
-						for (int y=block.y_start; y<block.y_end; y++) {
-							const int m1 = std::min(t+1, fsize[0]);
-							const int m2 = std::min(x+1, fsize[1]);
-							const int m3 = std::min(y+1, fsize[2]);
-							T sum = 0;
-							for (int k=0; k<m1; k++)
-								for (int i=0; i<m2; i++)
-									for (int j=0; j<m3; j++)
-										sum += phi(k, i, j)*zeta(t-k, x-i, y-j);
-							zeta(t, x, y) += sum;
-						}
-					}
-				}
-
-				controller.set_completed(block);
-			}
-		}
+	void generate_zeta_parallel_worker(parallel::ZetaGenerationController& controller){
+		std::cout<"hello";
+//		const size3 fsize = phi.shape();
+//		const size3 zsize = zeta.shape();
+//
+//		while (true){
+//			parallel::ZetaGenerationBlock block;
+//			bool was_found = controller.find_available(block);
+//
+//			if (!was_found){
+//				std::lock_guard<std::mutex> lock(controller.mtx);
+//				if (controller.queue.size() == 0){
+//					break;
+//				}
+//			} else {
+//				for (int t=block.t_start; t<block.t_end; t++) {
+//					for (int x=block.x_start; x<block.x_end; x++) {
+//						for (int y=block.y_start; y<block.y_end; y++) {
+//							const int m1 = std::min(t+1, fsize[0]);
+//							const int m2 = std::min(x+1, fsize[1]);
+//							const int m3 = std::min(y+1, fsize[2]);
+//							T sum = 0;
+//							for (int k=0; k<m1; k++)
+//								for (int i=0; i<m2; i++)
+//									for (int j=0; j<m3; j++)
+//										sum += phi(k, i, j)*zeta(t-k, x-i, y-j);
+//							zeta(t, x, y) += sum;
+//						}
+//					}
+//				}
+//
+//				controller.set_completed(block);
+//			}
+//		}
 	}
 
 	/// Генерация отдельных частей реализации волновой поверхности.
@@ -242,7 +241,7 @@ namespace autoreg {
 		std::vector<std::thread> threads;
 
 		for(int thread_id=0; thread_id< n_threads; ++thread_id){
-			std::thread current_thread(generate_zeta_parallel_worker<T>, phi, zeta, controller);
+			std::thread current_thread(generate_zeta_parallel_worker, controller);
 			threads.push_back(std::move(current_thread));
 		}
 
