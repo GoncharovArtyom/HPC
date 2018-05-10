@@ -1,7 +1,3 @@
-//
-// Created by Goncharov.Ar on 5/10/2018.
-//
-
 #ifndef HPC_GENERATE_ZETA_PARALLEL_HH
 #define HPC_GENERATE_ZETA_PARALLEL_HH
 
