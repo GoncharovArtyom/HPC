@@ -238,7 +238,7 @@ namespace autoreg {
 
 		parallel::ZetaGenerationController controller(t_step, x_step, y_step, t1, x1, y1);
 
-		std::clog<<"hello";
+		std::clog<<controller.completed(0, 0, 0)<<std::endl;
 
 		int n_threads = 8;
 		std::vector<std::thread> threads;
