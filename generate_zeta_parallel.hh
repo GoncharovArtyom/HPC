@@ -10,6 +10,68 @@
 namespace parallel {
     using namespace std;
 
+    struct ZetaGenerationBlock {
+        ZetaGenerationBlock(mutex& mtx_):mtx(mtx_){}
+
+        bool is_available() {
+            int t_id_prev = t_id - 1;
+            int x_id_prev = x_id - 1;
+            int y_id_prev = y_id - 1;
+
+            lock_guard <mutex> lock(mtx);
+
+            if (t_id_prev >= 0 && !completed(t_id_prev, x_id, y_id)) {
+                return false;
+            }
+
+            if (x_id_prev >= 0 && !completed(t_id, x_id_prev, y_id)) {
+                return false;
+            }
+
+            if (y_id_prev >= 0 && !completed(t_id, x_id, y_id_prev)) {
+                return false;
+            }
+
+            if (t_id_prev >= 0 && x_id_prev >= 0 && !completed(t_id_prev, x_id_prev, y_id)) {
+                return false;
+            }
+
+            if (t_id_prev >= 0 && y_id_prev >= 0 && !completed(t_id_prev, x_id, y_id_prev)) {
+                return false;
+            }
+
+            if (x_id_prev >= 0 && y_id_prev >= 0 && !completed(t_id, x_id_prev, y_id_prev)) {
+                return false;
+            }
+
+            if (t_id_prev >= 0 && x_id_prev >= 0 && y_id_prev >= 0 &&
+                !completed(t_id_prev, x_id_prev, y_id_prev)) {
+                return false;
+            }
+
+            return true;
+        }
+
+        void set_completed() {
+            lock_guard <mutex> lock(mtx);
+            completed(t_id, x_id, y_id) = true;
+        }
+
+        int t_start;
+        int x_start;
+        int y_start;
+
+        int t_end;
+        int x_end;
+        int y_end;
+
+        int x_id;
+        int y_id;
+        int t_id;
+
+        mutex& mtx;
+    };
+
     struct ZetaGenerationController {
 
         ZetaGenerationController(int t_step_, int x_step_, int y_step_, int t_max, int x_max, int y_max):
@@ -83,68 +145,6 @@ namespace parallel {
         int y_step;
 
         mutex mtx;
-    };
-
-    struct ZetaGenerationBlock {
-        ZetaGenerationBlock(mutex& mtx_):mtx(mtx_){}
-
-        bool is_available() {
-            int t_id_prev = t_id - 1;
-            int x_id_prev = x_id - 1;
-            int y_id_prev = y_id - 1;
-
-            lock_guard <mutex> lock(mtx);
-
-            if (t_id_prev >= 0 && !completed(t_id_prev, x_id, y_id)) {
-                return false;
-            }
-
-            if (x_id_prev >= 0 && !completed(t_id, x_id_prev, y_id)) {
-                return false;
-            }
-
-            if (y_id_prev >= 0 && !completed(t_id, x_id, y_id_prev)) {
-                return false;
-            }
-
-            if (t_id_prev >= 0 && x_id_prev >= 0 && !completed(t_id_prev, x_id_prev, y_id)) {
-                return false;
-            }
-
-            if (t_id_prev >= 0 && y_id_prev >= 0 && !completed(t_id_prev, x_id, y_id_prev)) {
-                return false;
-            }
-
-            if (x_id_prev >= 0 && y_id_prev >= 0 && !completed(t_id, x_id_prev, y_id_prev)) {
-                return false;
-            }
-
-            if (t_id_prev >= 0 && x_id_prev >= 0 && y_id_prev >= 0 &&
-                !completed(t_id_prev, x_id_prev, y_id_prev)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        void set_completed() {
-            lock_guard <mutex> lock(mtx);
-            completed(t_id, x_id, y_id) = true;
-        }
-
-        int t_start;
-        int x_start;
-        int y_start;
-
-        int t_end;
-        int x_end;
-        int y_end;
-
-        int x_id;
-        int y_id;
-        int t_id;
-
-        mutex& mtx;
     };
 }
 #endif //HPC_GENERATE_ZETA_PARALLEL_HH
