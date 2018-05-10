@@ -15,6 +15,7 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <cmath>
 
 #include <blitz/array.h>         // for Array, Range, shape, any
 
@@ -232,9 +233,12 @@ namespace autoreg {
 		const int x1 = zsize[1];
 		const int y1 = zsize[2];
 
-		const int t_step = fsize[0];
-		const int x_step = fsize[1];
-		const int y_step = fsize[2];
+		const int t_step = std::max(fsize[0], zsize[0]/15);
+		const int x_step = std::max(fsize[1], zsize[1]/5);
+		const int y_step = std::max(fsize[2], zsize[2]/5);
+
+		std::clog<<"Размер блока: "<<t_step<<"*"<<x_step<<"*"<<y_step<<std::endl;
+		std::clog<<"Всего блоков: "<<ceil(zsize[0]*zsize[1]*zsize[2]/t_step/x_step/y_step)<<std::endl;
 
 		parallel::ZetaGenerationController controller(t_step, x_step, y_step, t1, x1, y1);
 
