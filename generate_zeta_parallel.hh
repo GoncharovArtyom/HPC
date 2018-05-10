@@ -28,7 +28,7 @@ namespace parallel
                 return false;
             }
 
-            for(auto& current = queue.begin(); current != queue.end(); ++current){
+            for(auto current = queue.begin(); current != queue.end(); ++current){
                 if (current->is_available()){
                     available_block = *current;
                     queue.erase(current);
@@ -122,7 +122,7 @@ namespace parallel
         }
 
         void set_completed(){
-            lock_guard<mutex> lock;
+            lock_guard<mutex> lock(mtx);
             completed.insert(make_tuple(t_start, x_start, y_start));
         }
 
