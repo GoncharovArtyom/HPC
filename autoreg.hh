@@ -241,15 +241,17 @@ namespace autoreg {
 		int n_threads = 8;
 		std::vector<std::thread> threads;
 
-		for(int thread_id=0; thread_id< n_threads; ++thread_id){
-			std::thread current_thread(generate_zeta_parallel_worker<T>, std::ref(phi), std::ref(zeta),
-									   std::ref(controller));
-			threads.push_back(std::move(current_thread));
-		}
+		controller.is_available(controller.queue[0]);
 
-		for(std::thread& current_thread : threads){
-			current_thread.join();
-		}
+//		for(int thread_id=0; thread_id< n_threads; ++thread_id){
+//			std::thread current_thread(generate_zeta_parallel_worker<T>, std::ref(phi), std::ref(zeta),
+//									   std::ref(controller));
+//			threads.push_back(std::move(current_thread));
+//		}
+//
+//		for(std::thread& current_thread : threads){
+//			current_thread.join();
+//		}
 
 	}
 
