@@ -79,7 +79,7 @@ namespace parallel {
             }
 
             for (auto current = queue.begin(); current != queue.end(); ++current) {
-                if (is_available(current)) {
+                if (is_available(*current)) {
                     available_block = *current;
                     queue.erase(current);
                     return true;
