@@ -86,6 +86,8 @@ namespace parallel {
 
         bool find_available(ZetaGenerationBlock &available_block) {
             lock_guard <recursive_mutex> lock(mtx);
+            
+            std::clog<<queue.size()<<std::endl;
 
             if (queue.size() == 0) {
                 return false;
@@ -95,7 +97,6 @@ namespace parallel {
                 if (is_available(*current)) {
                     available_block = *current;
                     queue.erase(current);
-                    std::clog<<available_block<<std::endl;
                     return true;
                 }
             }
@@ -113,12 +114,6 @@ namespace parallel {
             int y_id_prev = block.y_id - 1;
 
             lock_guard <recursive_mutex> lock(mtx);
-
-            std::clog<<block;
-            std::clog<<std::endl;
-
-            std::clog<<t_id_prev<<" "<<x_id_prev<<" "<<y_id_prev<<std::endl;
-            std::clog<<std::endl;
 
 //            std::clog<<completed(t_id_prev, x_id, y_id)<<std::endl;
 //            std::clog<<completed(t_id, x_id_prev, y_id)<<std::endl;
