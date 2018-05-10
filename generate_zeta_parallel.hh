@@ -6,6 +6,7 @@
 #include <list>
 #include <blitz/array.h>
 #include <cmath>
+#include <algorithm>
 
 namespace parallel {
     using namespace std;
@@ -70,6 +71,10 @@ namespace parallel {
                 }
             }
         }
+
+        ZetaGenerationController(ZetaGenerationController && other):
+                completed(move(other.completed)), queue(move(other.queue)), t_step(other.t_step), x_step(other.x_step),
+                y_step(other.y_step), mtx(move(other.mtx)){}
 
         bool find_available(ZetaGenerationBlock &available_block) {
             lock_guard <mutex> lock(mtx);

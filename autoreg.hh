@@ -187,7 +187,7 @@ namespace autoreg {
 	}
 
 	void generate_zeta_parallel_worker(parallel::ZetaGenerationController& controller){
-		std::cout<"hello";
+		std::cout<<"hello";
 //		const size3 fsize = phi.shape();
 //		const size3 zsize = zeta.shape();
 //
