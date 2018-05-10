@@ -186,37 +186,9 @@ namespace autoreg {
 		return eps;
 	}
 
-	/// Генерация отдельных частей реализации волновой поверхности.
 	template<class T>
-	void generate_zeta(const AR_coefs<T>& phi, Zeta<T>& zeta) {
-		const size3 fsize = phi.shape();
-		const size3 zsize = zeta.shape();
-		const int t1 = zsize[0];
-		const int x1 = zsize[1];
-		const int y1 = zsize[2];
-
-		const int t_step = fsize[0];
-		const int x_step = fsize[1];
-		const int y_step = fsize[2];
-
-		parallel::ZetaGenerationController controller(t_step, x_step, y_step, t1, x1, y1);
-
-		int n_threads = 8;
-		std::vector<std::thread> threads;
-
-		for(int thread_id=0; thread_id< n_threads; ++thread_id){
-			std::thread current_thread(generate_zeta_parallel_worker, phi, zeta, controller);
-			threads.push_back(std::move(current_thread));
-		}
-
-		for(std::thread& current_thread : threads){
-			current_thread.join();
-		}
-
-	}
-
-	template<class T>
-	void generate_zeta_parallel_worker(const AR_coefs<T>& phi, Zeta<T>& zeta, parallel::ZetaGenerationController& controller){
+	void generate_zeta_parallel_worker(const AR_coefs<T>& phi, Zeta<T>& zeta,
+									   parallel::ZetaGenerationController& controller){
 		const size3 fsize = phi.shape();
 		const size3 zsize = zeta.shape();
 
@@ -249,6 +221,35 @@ namespace autoreg {
 				controller.set_completed(block);
 			}
 		}
+	}
+
+	/// Генерация отдельных частей реализации волновой поверхности.
+	template<class T>
+	void generate_zeta(const AR_coefs<T>& phi, Zeta<T>& zeta) {
+		const size3 fsize = phi.shape();
+		const size3 zsize = zeta.shape();
+		const int t1 = zsize[0];
+		const int x1 = zsize[1];
+		const int y1 = zsize[2];
+
+		const int t_step = fsize[0];
+		const int x_step = fsize[1];
+		const int y_step = fsize[2];
+
+		parallel::ZetaGenerationController controller(t_step, x_step, y_step, t1, x1, y1);
+
+		int n_threads = 8;
+		std::vector<std::thread> threads;
+
+		for(int thread_id=0; thread_id< n_threads; ++thread_id){
+			std::thread current_thread(generate_zeta_parallel_worker, phi, zeta, controller);
+			threads.push_back(std::move(current_thread));
+		}
+
+		for(std::thread& current_thread : threads){
+			current_thread.join();
+		}
+
 	}
 
 	template<class T, int N>
