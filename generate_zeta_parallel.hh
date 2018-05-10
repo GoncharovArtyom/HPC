@@ -10,6 +10,7 @@
 
 namespace parallel {
     using namespace std;
+    using namespace blitz;
 
     struct ZetaGenerationBlock {
         int t_start;
@@ -32,7 +33,9 @@ namespace parallel {
             size_t t_size = ceil(double(t_max) / t_step);
             size_t x_size = ceil(double(x_max) / x_step);
             size_t y_size = ceil(double(y_max) / y_step);
+
             completed.resize(t_size, x_size, y_size);
+            completed(Range::all(), Range::all(), Range::all()) = false;
 
             for (int current_t_start = 0; current_t_start < t_max; current_t_start += t_step) {
                 int current_t_end;
