@@ -39,9 +39,9 @@ namespace parallel {
         }
 
         static void initialize(int t_step, int x_step, int y_step, int t_max, int x_max, int y_max) {
-            ZetaGenerationBlock::t_step = t_step;
-            ZetaGenerationBlock::x_step = x_step;
-            ZetaGenerationBlock::y_step = y_step;
+            int ZetaGenerationBlock::t_step = t_step;
+            int ZetaGenerationBlock::x_step = x_step;
+            int ZetaGenerationBlock::y_step = y_step;
 
             size_t t_size = ceil(double(t_max) / t_step);
             size_t x_size = ceil(double(x_max) / x_step);
