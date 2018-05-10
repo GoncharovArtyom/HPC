@@ -193,6 +193,13 @@ namespace autoreg {
 		const int t1 = zsize[0];
 		const int x1 = zsize[1];
 		const int y1 = zsize[2];
+
+		const int t_step = 10;
+		const int x_step = 10;
+		const int y_step = 10;
+
+		parallel::ZetaGenerationBlock::initialize(t_step, x_step, y_step, t1, x1, y1);
+
 		for (int t=0; t<t1; t++) {
 			for (int x=0; x<x1; x++) {
 				for (int y=0; y<y1; y++) {
