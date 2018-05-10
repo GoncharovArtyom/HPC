@@ -14,6 +14,7 @@
 #include <fstream>
 #include <vector>
 #include <thread>
+#include <mutex>
 
 #include <blitz/array.h>         // for Array, Range, shape, any
 
@@ -194,25 +195,58 @@ namespace autoreg {
 		const int x1 = zsize[1];
 		const int y1 = zsize[2];
 
-		const int t_step = 10;
-		const int x_step = 10;
-		const int y_step = 10;
+		const int t_step = fsize[0];
+		const int x_step = fsize[1];
+		const int y_step = fsize[2];
 
 		parallel::ZetaGenerationController controller(t_step, x_step, y_step, t1, x1, y1);
 
-		for (int t=0; t<t1; t++) {
-			for (int x=0; x<x1; x++) {
-				for (int y=0; y<y1; y++) {
-					const int m1 = std::min(t+1, fsize[0]);
-					const int m2 = std::min(x+1, fsize[1]);
-					const int m3 = std::min(y+1, fsize[2]);
-					T sum = 0;
-					for (int k=0; k<m1; k++)
-						for (int i=0; i<m2; i++)
-							for (int j=0; j<m3; j++)
-								sum += phi(k, i, j)*zeta(t-k, x-i, y-j);
-					zeta(t, x, y) += sum;
+		int n_threads = 8;
+		std::vector<std::thread> threads;
+
+		for(int thread_id=0; thread_id< n_threads; ++thread_id){
+			std::thread current_thread(generate_zeta_parallel_worker, phi, zeta, controller);
+			threads.push_back(std::move(current_thread));
+		}
+
+		for(std::thread& current_thread : threads){
+			current_thread.join();
+		}
+
+	}
+
+	template<class T>
+	void generate_zeta_parallel_worker(const AR_coefs<T>& phi, Zeta<T>& zeta, parallel::ZetaGenerationController& controller){
+		const size3 fsize = phi.shape();
+		const size3 zsize = zeta.shape();
+
+		while (true){
+			parallel::ZetaGenerationBlock block;
+			bool was_found = controller.find_available(block);
+
+			if (!was_found){
+				std::lock_guard<std::mutex> lock(controller.mtx);
+				if (controller.queue.size() == 0){
+					break;
 				}
+			} else {
+				for (int t=block.t_start; t<block.t_end; t++) {
+					for (int x=block.x_start; x<block.x_end; x++) {
+						for (int y=block.y_start; y<block.y_end; y++) {
+							const int m1 = std::min(t+1, fsize[0]);
+							const int m2 = std::min(x+1, fsize[1]);
+							const int m3 = std::min(y+1, fsize[2]);
+							T sum = 0;
+							for (int k=0; k<m1; k++)
+								for (int i=0; i<m2; i++)
+									for (int j=0; j<m3; j++)
+										sum += phi(k, i, j)*zeta(t-k, x-i, y-j);
+							zeta(t, x, y) += sum;
+						}
+					}
+				}
+
+				controller.set_completed(block);
 			}
 		}
 	}
