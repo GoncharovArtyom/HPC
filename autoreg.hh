@@ -197,7 +197,7 @@ namespace autoreg {
 			bool was_found = controller.find_available(block);
 
 			if (!was_found){
-				std::lock_guard<std::mutex> lock(controller.mtx);
+				std::lock_guard<std::recursive_mutex> lock(controller.mtx);
 				if (controller.queue.size() == 0){
 					break;
 				}
@@ -241,18 +241,18 @@ namespace autoreg {
 		int n_threads = 8;
 		std::vector<std::thread> threads;
 
-		std::clog<<controller.is_available(controller.queue.front());
-		std::clog<<std::endl;
+//		std::clog<<controller.is_available(controller.queue.front());
+//		std::clog<<std::endl;
 
-//		for(int thread_id=0; thread_id< n_threads; ++thread_id){
-//			std::thread current_thread(generate_zeta_parallel_worker<T>, std::ref(phi), std::ref(zeta),
-//									   std::ref(controller));
-//			threads.push_back(std::move(current_thread));
-//		}
-//
-//		for(std::thread& current_thread : threads){
-//			current_thread.join();
-//		}
+		for(int thread_id=0; thread_id< n_threads; ++thread_id){
+			std::thread current_thread(generate_zeta_parallel_worker<T>, std::ref(phi), std::ref(zeta),
+									   std::ref(controller));
+			threads.push_back(std::move(current_thread));
+		}
+
+		for(std::thread& current_thread : threads){
+			current_thread.join();
+		}
 
 	}
 
