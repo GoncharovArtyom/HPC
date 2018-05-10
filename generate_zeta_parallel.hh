@@ -27,9 +27,9 @@ namespace parallel {
         int t_id;
 
         friend std::ostream& operator<<(std::ostream& out, ZetaGenerationBlock& block){
-            out << "t_id = " << block.t_id << "x_id = " << block.x_id << "y_id = " << block.y_id << std::endl;
-            out << "t_start = " << block.t_start << "x_id = " << block.x_start << "y_start = " << block.y_start << std::endl;
-            out << "t_end = " << block.t_end << "x_end = " << block.x_end << "y_end = " << block.y_end << std::endl;
+            out << "t_id = " << block.t_id << " x_id = " << block.x_id << " y_id = " << block.y_id << std::endl;
+            out << "t_start = " << block.t_start << " x_id = " << block.x_start << " y_start = " << block.y_start << std::endl;
+            out << "t_end = " << block.t_end << " x_end = " << block.x_end << " y_end = " << block.y_end << std::endl;
 
             return out;
         }
