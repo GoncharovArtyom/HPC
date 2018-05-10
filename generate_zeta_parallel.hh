@@ -119,13 +119,13 @@ namespace parallel {
             std::clog<<t_id_prev<<" "<<x_id_prev<<" "<<y_id_prev<<std::endl;
             std::clog<<std::endl;
 
-            std::clog<<completed(t_id_prev, x_id, y_id)<<std::endl;
-            std::clog<<completed(t_id, x_id_prev, y_id)<<std::endl;
-            std::clog<<completed(t_id, x_id, y_id_prev)<<std::endl;
-            std::clog<<completed(t_id_prev, x_id_prev, y_id)<<std::endl;
-            std::clog<<completed(t_id_prev, x_id, y_id_prev)<<std::endl;
-            std::clog<<completed(t_id, x_id_prev, y_id_prev)<<std::endl;
-            std::clog<<completed(t_id_prev, x_id_prev, y_id_prev)<<std::endl;
+//            std::clog<<completed(t_id_prev, x_id, y_id)<<std::endl;
+//            std::clog<<completed(t_id, x_id_prev, y_id)<<std::endl;
+//            std::clog<<completed(t_id, x_id, y_id_prev)<<std::endl;
+//            std::clog<<completed(t_id_prev, x_id_prev, y_id)<<std::endl;
+//            std::clog<<completed(t_id_prev, x_id, y_id_prev)<<std::endl;
+//            std::clog<<completed(t_id, x_id_prev, y_id_prev)<<std::endl;
+//            std::clog<<completed(t_id_prev, x_id_prev, y_id_prev)<<std::endl;
 
             if (t_id_prev >= 0 && !completed(t_id_prev, x_id, y_id)) {
                 return false;
