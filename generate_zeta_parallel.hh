@@ -26,10 +26,10 @@ namespace parallel {
         int y_id;
         int t_id;
 
-        std::ostream& operator<<(std::ostream& out){
-            out << "t_id = " << t_id << "x_id = " << x_id << "y_id = " << y_id << std::endl;
-            out << "t_start = " << t_start << "x_id = " << x_start << "y_start = " << y_start << std::endl;
-            out << "t_end = " << t_end << "x_end = " << x_end << "y_end = " << y_end << std::endl;
+        friend std::ostream& operator<<(std::ostream& out, ZetaGenerationBlock& block){
+            out << "t_id = " << block.t_id << "x_id = " << block.x_id << "y_id = " << block.y_id << std::endl;
+            out << "t_start = " << block.t_start << "x_id = " << block.x_start << "y_start = " << block.y_start << std::endl;
+            out << "t_end = " << block.t_end << "x_end = " << block.x_end << "y_end = " << block.y_end << std::endl;
         }
     };
 
