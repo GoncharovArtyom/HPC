@@ -87,38 +87,38 @@ namespace parallel {
         }
 
         bool is_available() {
-            int t_start_prev = t_start - t_step;
-            int x_start_prev = x_start - x_step;
-            int y_start_prev = y_start - y_step;
+            int t_id_prev = t_id - 1;
+            int x_id_prev = x_id - 1;
+            int y_id_prev = y_id - 1;
 
             lock_guard <mutex> lock(mtx);
 
-            if (t_start_prev >= 0 && ! completed(t_start_prev, x_start, y_start)) {
+            if (t_id_prev >= 0 && ! completed(t_id_prev, x_id, y_id)) {
                 return false;
             }
 
-            if (x_start_prev >= 0 && ! completed(t_start, x_start_prev, y_start)) {
+            if (x_id_prev >= 0 && ! completed(t_id, x_id_prev, y_id)) {
                 return false;
             }
 
-            if (y_start_prev >= 0 && ! completed(t_start, x_start, y_start_prev)) {
+            if (y_id_prev >= 0 && ! completed(t_id, x_id, y_id_prev)) {
                 return false;
             }
 
-            if (t_start_prev >= 0 && x_start_prev >= 0 && ! completed(t_start_prev, x_start_prev, y_start)) {
+            if (t_id_prev >= 0 && x_id_prev >= 0 && ! completed(t_id_prev, x_id_prev, y_id)) {
                 return false;
             }
 
-            if (t_start_prev >= 0 && y_start_prev >= 0 && !completed(t_start_prev, x_start, y_start_prev)) {
+            if (t_id_prev >= 0 && y_id_prev >= 0 && !completed(t_id_prev, x_id, y_id_prev)) {
                 return false;
             }
 
-            if (x_start_prev >= 0 && y_start_prev >= 0 && !completed(t_start, x_start_prev, y_start_prev)) {
+            if (x_id_prev >= 0 && y_id_prev >= 0 && !completed(t_id, x_id_prev, y_id_prev)) {
                 return false;
             }
 
-            if (t_start_prev >= 0 && x_start_prev >= 0 && y_start_prev >= 0 &&
-                !completed(t_start_prev, x_start_prev, y_start_prev)) {
+            if (t_id_prev >= 0 && x_id_prev >= 0 && y_id_prev >= 0 &&
+                !completed(t_id_prev, x_id_prev, y_id_prev)) {
                 return false;
             }
 
